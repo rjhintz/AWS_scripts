@@ -1,22 +1,10 @@
 #!/bin/bash
 #
-# AWS
+# AWS - Create a VPC
 # Setup
 #
-# Put the AZs into an array
-az=($(aws ec2 describe-availability-zones --output text | cut -f 4))
-#
-index=0
-# How many are there?
-az_count=${#az[*]}
-while [ $index -lt $az_count ]
-do
-    echo ${az[$index]}
-    # arithmetic evaluation syntax ((x))
-    ((index++))
-done;
-# List a single AZ
-# echo "AZ 0 " ${az[0]}
+export AWS_DEFAULT_REGION=us-east-1
+echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
 #
 # Is there a VPC with CIDR 172.16.0.0/16?
 default_cidr="172.16.0.0/16"
@@ -40,12 +28,15 @@ fi
 #
 # get VpcId from field 7
 vpc=$(aws ec2 describe-vpcs --output text --filters Name=cidr,Values=$cidr | cut -f 7)
+#
 # if $vpc = regex ^$, then no VPC with specified CIDR
 if [[ "$vpc" =~ ^$ ]]; then
-      echo "No VPC with CIDR $cidr"
-      # No VPC with desired CIDR so create one
-      # --create as /16
-      # aws ec2 create-vpc  --cidr-block <value>
+      echo "No current VPC with CIDR $cidr"
+      # No current VPC with desired CIDR so create one
+      # --create as /16 (64K addresses) to /28 (16 addresses)
+      # aws ec2 create-vpc  --dry-run | --no-dry-run \
+      #                     --instance-tenacy <value>  \
+      #                     --cidr-block <value>
       aws ec2 create-vpc  --cidr-block $cidr
 fi
 # Wait until VPC is available or fails to be created
@@ -54,81 +45,3 @@ aws ec2 wait vpc-available --filters Name=cidr,Values=$cidr
 # ========================================================================
 # Describe VPC
 aws ec2 describe-vpcs --output table   --filters Name=cidr,Values=$cidr
-# ========================================================================
-# Describe subnets
-# Describe subnet fields
-# 1- "SUBNETS"
-# 2- AvailabilityZone
-# 3- AvailableIpAddressCount
-# 4- CidrBlock
-# 5- DefaultForAz
-# 6- MapPublicIpOnLaunch
-# 7- State
-# 8- SubnetId
-# 9- VpcId
-aws ec2 describe-subnets --output text   --filters Name=vpc-id,Values=$vpc | cut -f 8 >subnet
-if [ "$subnet" ]; then
-    echo ""
-    aws ec2 describe-subnets --output table  --filters Name=vpc-id,Values=$vpc
-else
-    echo ""
-    echo "No VPC subnets for CIDR $cidr"
-fi
-# Create 6 subnets
-# --create each as /24
-# --spread evenly across 2 AZs
-# --some AZs may not allow subnet creation
-# aws ec2 create-subnet --vpc-id <value> \
-#                       --cidr-block <value> \
-#                       --availability-zone <value> \
-#                       --dry-run | --no-dry-run
-#    index=0
-#   # How many are there?
-#   az_count=${#az[*]}
-#   while [ $index -lt $az_count ]
-#   do
-#       echo ${az[$index]}
-#       # arithmetic evaluation syntax ((x))
-#       ((index++))
-#   done;
-az_spread=2
-subnets_per_az=3
-
-
-#   y=bar
-#   z=$x$y        # $z is now "foobar"
-#   z="$x$y"      # $z is still "foobar"
-#   z="$xand$y"   # does not work
-#   z="${x}and$y" # does work, "fooandbar"
-#   z="$x and $y" # does work, "foo and bar"
-
- aws ec2 create-subnet --vpc-id $vpc \
-                       --cidr-block 172.16.1.0/24 \
-                       --availability-zone ${az[0]} \
-                       --no-dry-run # | --no-dry-run
-
-
-
-
-  aws ec2 wait subnet-available
-
-aws ec2 describe-subnets --output text   --filters Name=vpc-id,Values=$vpc | cut -f 8 >subnet
-if [ "$subnet" ]; then
-    echo ""
-    aws ec2 describe-subnets --output table  --filters Name=vpc-id,Values=$vpc
-else
-    echo ""
-    echo "No VPC subnets for CIDR $cidr"
-fi
-# ========================================================================
-# Put in ˜/bin - Needs chmod 755 <filename>
-# Execute: ./hello_world
-# echo 'Hello World!' #another comment
-#
-#  a=z                   # Assign the string "z" to variable a
-#  b="a string"         # Embedded spaces must be within quotes.
-#  c="a string and $b"  # Other expansions such as variables can be expanded into the assignment.
-#  d=$(ls -l foo.txt)   # Results of a command.
-#  e=$((5 * 7))         # Arithmetic expansion.
-#  f="\t\ta string\n"   # Escape sequences such as tabs and newlines.
-#
