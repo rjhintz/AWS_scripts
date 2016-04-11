@@ -21,3 +21,20 @@ echo 'Hello World!' #another comment
 #  d=$(ls -l foo.txt)   # Results of a command.
 #  e=$((5 * 7))         # Arithmetic expansion.
 #  f="\t\ta string\n"   # Escape sequences such as tabs and newlines.
+# ====================================================================
+# Put the AZs into an array
+az=($(aws ec2 describe-availability-zones --output text | cut -f 4))
+#
+index=0
+# How many are there?
+az_count=${#az[*]}
+echo "AZ count " $az_count
+# List AZs
+while [ $index -lt $az_count ]
+do
+    echo ${az[$index]}
+    # arithmetic evaluation syntax ((x))
+    ((index++))
+done;
+#
+# ====================================================================
