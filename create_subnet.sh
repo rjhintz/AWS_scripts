@@ -1,11 +1,32 @@
 #!/bin/bash
 #
-# Create subnets
-# --create as /24
-# --spread across >1 AZ
-# --public: web facing for ELB only (?)
-# --private: web and DB tiers
-
+aws ec2 describe-subnets --output text   --filters Name=vpc-id,Values=$vpc | cut -f 8 >subnet
+if [ "$subnet" ]; then
+    echo ""
+    aws ec2 describe-subnets --output table  --filters Name=vpc-id,Values=$vpc
+else
+    echo ""
+    echo "No VPC subnets for CIDR $cidr"
+fi
+# Create 6 subnets
+# --create each as /24
+# --spread evenly across 2 AZs
+# --some AZs may not allow subnet creation
+# aws ec2 create-subnet --vpc-id <value> \
+#                       --cidr-block <value> \
+#                       --availability-zone <value> \
+#                       --dry-run | --no-dry-run
+#    index=0
+#   # How many are there?
+#   az_count=${#az[*]}
+#   while [ $index -lt $az_count ]
+#   do
+#       echo ${az[$index]}
+#       # arithmetic evaluation syntax ((x))
+#       ((index++))
+#   done;
+az_spread=2
+subnets_per_az=3
 # aws ec2 create-subnet --vpc-id <value> \
 #                       --cidr-block <value> \
 #                       --availability-zone <value>
@@ -20,15 +41,3 @@
                        --generate-cli-skeleton
  # aws ec2 wait subnet-available
 
-# ========================================================================
-# Put in ˜/bin - Needs chmod 755 <filename>
-# Execute: ./hello_world
-# echo 'Hello World!' #another comment
-#
-#  a=z                   # Assign the string "z" to variable a
-#  b="a string"         # Embedded spaces must be within quotes.
-#  c="a string and $b"  # Other expansions such as variables can be expanded into the assignment.
-#  d=$(ls -l foo.txt)   # Results of a command.
-#  e=$((5 * 7))         # Arithmetic expansion.
-#  f="\t\ta string\n"   # Escape sequences such as tabs and newlines.
-#
