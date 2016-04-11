@@ -1,11 +1,11 @@
 #!/bin/bash
-
+#
 # AWS
 # Setup
 #
 # Put the AZs into an array
 az=($(aws ec2 describe-availability-zones --output text | cut -f 4))
-
+#
 index=0
 # How many are there?
 az_count=${#az[*]}
@@ -17,7 +17,7 @@ do
 done;
 # List a single AZ
 # echo "AZ 0 " ${az[0]}
-
+#
 # Is there a VPC with CIDR 172.16.0.0/16?
 default_cidr="172.16.0.0/16"
 read -p "CIDR? (default: $default_cidr)  " cidr
