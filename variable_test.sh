@@ -33,17 +33,11 @@ index_subnets=0
 # --vpc-id <value>
 # --cidr-block <value>
 # [--availability-zone <value>]
-
-cidr1=(172.16.{1..3}.0.0/24)
-cidr2=(172.16.{11..13}.0.0/24)
+# Braces expand to 01, 02, 03, 11, 12, 13
+cidr0=(172.16.{0..1}{1..3}.0.0/24)
 #
 echo " "
-echo ${cidr1[*]}
-echo ${cidr2[*]}
-# result
-#
-# 172.16.1.0.0/24 172.16.2.0.0/24 172.16.3.0.0/24
-# 172.16.11.0.0/24 172.16.12.0.0/24 172.16.13.0.0/24
+echo ${cidr0[*]}
 #
 echo "availability-zone " ${az[0]}
-echo "cidr-block " ${cidr1[0]}
+echo "cidr-block " ${cidr0[0]}
