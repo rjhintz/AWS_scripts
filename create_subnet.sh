@@ -34,10 +34,11 @@ if [[ "$vpc" =~ ^$ ]]; then
       exit
 fi
 # =======================================================================
-aws ec2 describe-subnets --output text   --filters Name=vpc-id,Values=$vpc | cut -f 8 >subnet
+subnet=$(aws ec2 describe-subnets --output text   --filters Name=vpc-id,Values=$vpc | cut -f 8)
 if [ "$subnet" ]; then
     echo ""
     aws ec2 describe-subnets --output table  --filters Name=vpc-id,Values=$vpc
+    exit
 else
     echo ""
     echo "No VPC subnets for CIDR $cidr"
@@ -67,46 +68,46 @@ done;
 #                       --cidr-block <value> \
 #                       --availability-zone <value> \
 #                       --dry-run | --no-dry-run
-# aws ec2 create-subnet --vpc-id <value> \
-#                       --cidr-block <value> \
-#                       --availability-zone <value>
 # aws ec2 wait subnet-available
 #
-# use --cli-input-json parameter after --generate-cli-skeleton
-# aws ec2 run-instances --cli-input-json file://ec2runinst.json
+# In AZ 1, create 3 subnets
+#   Create 172.16.1.0/24
+#   Create 172.16.2.0/24
+#   Create 172.16.3.0/24
+# In AZ 2, create 3 subnets
+#   Create 172.16.11.0/24
+#   Create 172.16.12.0/24
+#   Create 172.16.13.0/24
 #
-#aws ec2 create-subnet --vpc-id vpc-8a495fee \
-#                      --cidr-block 172.16.1.0 \
-#                      --availability-zone us-east-1a \
-#                      --generate-cli-skeleton
- # aws ec2 wait subnet-available
-
- # In AZ 1, create 3 subnets
- # Create 172.16.1.0/24
- # Create 172.16.2.0/24
- # Create 172.16.3.0/24
- # In AZ 2, create 3 subnets
- # Create 172.16.11.0/24
- # Create 172.16.12.0/24
- # Create 172.16.13.0/24
-
-az_spread=2
-subnet_spread=3
+# Array - braces expand to 1, 2, 3
+cidr_subnets=(172.16.{1..3}.0/24)
 #
-prefix=172
-suffix=/24
-end_blocks=.0.0
+az_spread=1
+subnet_spread=1
+#
 index_az=0
 index_subnets=0
 #
+echo "Creating subnets in VPC " $vpc
 while [ $index_az -lt $az_spread ]
 do
     while [ $index_subnets -lt $subnet_spread ]
     do
         echo "==> subnet pass " $((index_subnets + 1)) "of " $((index_az + 1)) # +1 offset
+        echo " "
+        echo "Create subnet " ${cidr_subnets[$index_subnets]} "in AZ " ${az[$index_az]}
+        aws ec2 create-subnet --vpc-id $vpc \
+                        --cidr-block ${cidr_subnets[$index_subnets]} \
+                        --availability-zone ${az[$index_az]} >> create_subnet.json
+#
+#  Error handling
+#
+                     #  --dry-run
+        aws ec2 wait subnet-available
         ((index_subnets++))
     done;
-    ((index_az++))
-    index_subnets=0 # reset inner loop index
+index_subnets=0 # reset inner loop index
+cidr_subnets=(172.16.{11..13}.0/24)
+((index_az++))
 done;
 # END
