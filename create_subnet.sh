@@ -98,11 +98,20 @@ do
         echo "Create subnet " ${cidr_subnets[$index_subnets]} "in AZ " ${az[$index_az]}
         aws ec2 create-subnet --vpc-id $vpc \
                         --cidr-block ${cidr_subnets[$index_subnets]} \
-                        --availability-zone ${az[$index_az]} >> create_subnet.json
+                        --availability-zone ${az[$index_az]} > create_subnet.json
+                     #  --dry-run
 #
 #  Error handling
 #
-                     #  --dry-run
+        if egrep --quiet  '("pending")|("available")' create_subnet.json
+        then
+            # code if found
+            echo "subnet ok; pending or available"
+        else
+            # code if not found
+            echo "error creating subnet. Exiting"
+            exit
+        fi
         aws ec2 wait subnet-available
         ((index_subnets++))
     done;
