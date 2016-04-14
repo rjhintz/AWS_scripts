@@ -82,10 +82,10 @@ done;
 # Array - braces expand to 1, 2, 3
 cidr_subnets=(172.16.{1..3}.0/24)
 #
-az_spread=1
-subnet_spread=1
+az_spread=4
+subnet_spread=3
 #
-index_az=0
+index_az=2
 index_subnets=0
 #
 echo "Creating subnets in VPC " $vpc
@@ -93,7 +93,6 @@ while [ $index_az -lt $az_spread ]
 do
     while [ $index_subnets -lt $subnet_spread ]
     do
-        echo "==> subnet pass " $((index_subnets + 1)) "of " $((index_az + 1)) # +1 offset
         echo " "
         echo "Create subnet " ${cidr_subnets[$index_subnets]} "in AZ " ${az[$index_az]}
         aws ec2 create-subnet --vpc-id $vpc \
@@ -109,6 +108,7 @@ do
             echo "subnet ok; pending or available"
         else
             # code if not found
+            echo ""
             echo "error creating subnet. Exiting"
             exit
         fi
