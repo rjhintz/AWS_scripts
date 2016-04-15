@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# AWS - Describe Internet Gateways
+# AWS - Create Internet Gateway
 #
 export AWS_DEFAULT_REGION=us-east-1
 echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
@@ -31,7 +31,26 @@ vpc=$(aws ec2 describe-vpcs --output text --filters Name=cidr,Values=$cidr | cut
 if [[ "$vpc" =~ ^$ ]]; then
     echo "No VPC with CIDR $cidr"
 else
-    aws ec2 describe-vpcs --output table   --filters Name=cidr,Values=$cidr
+    aws ec2 describe-vpcs --output text   --filters Name=cidr,Values=$cidr
     echo " "
-    aws ec2 describe-internet-gateways --output table   --filters Name=attachment.vpc-id,Values=$vpc
+    # Describe IGW results fields
+    # 1- "INTERNETGATEWAYS"
+    # 2- InternetGatewayId
+    # 3- Attachments: State
+    # 4- Attachments: VpcId
+    #
+    echo "Is there an Internet Gateway attached to the relevant VPC? "
+    aws ec2 describe-internet-gateways --output text #  --filters Name=attachment.vpc-id,Values=$vpc
 fi
+#
+echo " "
+aws ec2 create-internet-gateway > create_igw.json
+igw=$(cat create_igw.json | egrep igw-........ -o)
+echo "New IGW " $igw
+aws ec2 attach-internet-gateway \
+    --internet-gateway-id $igw  \
+    --vpc-id $vpc
+#
+echo " "
+aws ec2 describe-internet-gateways --output text #  --filters Name=attachment.vpc-id,Values=$vpc
+# END
