@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Create subject for an already created VPC
 #
@@ -120,3 +120,7 @@ cidr_subnets=(172.16.{11..13}.0/24)
 ((index_az++))
 done;
 # END
+# function_name ()
+# { 
+#     command... 
+# }
