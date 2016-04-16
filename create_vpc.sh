@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # AWS - Create a VPC
 # Setup
@@ -37,7 +37,7 @@ if [[ "$vpc" =~ ^$ ]]; then
       # aws ec2 create-vpc  --dry-run | --no-dry-run \
       #                     --instance-tenacy <value>  \
       #                     --cidr-block <value>
-      aws ec2 create-vpc  --cidr-block $cidr
+      aws ec2 create-vpc  --cidr-block $cidr > create_vpc.json
 fi
 # Wait until VPC is available or fails to be created
 # http://docs.aws.amazon.com/cli/latest/reference/ec2/wait/vpc-available.html
@@ -45,3 +45,10 @@ aws ec2 wait vpc-available --filters Name=cidr,Values=$cidr
 # ========================================================================
 # Describe VPC
 aws ec2 describe-vpcs --output table   --filters Name=cidr,Values=$cidr
+# END
+# name ()
+# {
+#     commands
+# 
+#     return
+# }
