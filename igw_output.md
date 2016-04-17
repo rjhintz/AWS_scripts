@@ -9,6 +9,12 @@ ATTACHMENTS	available	vpc-07093663
 INTERNETGATEWAYS	igw-9adb4cfe
 ATTACHMENTS	available	vpc-feaab09a
 ```
+#### Text and Filter on VPC
+```
+$  aws ec2 describe-internet-gateways --output=text --filter=Name=attachment.vpc-id,Values=vpc-feaab09a
+INTERNETGATEWAYS	igw-9adb4cfe
+ATTACHMENTS	available	vpc-feaab09a
+```
 #### Table
 ```txt
 -----------------------------------
