@@ -1,23 +1,23 @@
 ### Route Table Command Output
 #### Create Route Table Output
 ```json
-1   {                                                                                            
-  1     "RouteTable": {
-  2         "Tags": [],
-  3         "PropagatingVgws": [],
-  4         "VpcId": "vpc-feaab09a",
-  5         "RouteTableId": "rtb-71ac3116",
-  6         "Routes": [
-  7             {
-  8                 "State": "active",
-  9                 "DestinationCidrBlock": "172.16.0.0/16",
- 10                 "Origin": "CreateRouteTable",
- 11                 "GatewayId": "local"
- 12             }
- 13         ],
- 14         "Associations": []
- 15     }
- 16 }
+{                                                                                            
+"RouteTable": {
+    "Tags": [],
+    "PropagatingVgws": [],
+     "VpcId": "vpc-feaab09a"
+     "RouteTableId": "rtb-71ac3116",
+      "Routes": [
+         {
+               "State": "active",
+               "DestinationCidrBlock": "172.16.0.0/16",
+               "Origin": "CreateRouteTable",
+               "GatewayId": "local"
+         }
+      ],
+      "Associations": []
+    }
+ }
 ```
 #### Table Output
 ```
