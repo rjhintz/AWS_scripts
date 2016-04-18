@@ -45,7 +45,7 @@ fi
 #
 echo " "
 aws ec2 create-internet-gateway > create_igw.json
-igw=$(cat create_igw.json | egrep igw-........ -o)
+igw=$(cat create_igw.json | egrep--only-matching igw-[a-z0-9]{8} create_igw.json)
 echo "New IGW " $igw
 aws ec2 attach-internet-gateway \
     --internet-gateway-id $igw  \
