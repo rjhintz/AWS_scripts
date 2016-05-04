@@ -1,5 +1,8 @@
 # AWS Scripts
 Some scripts to manage AWS resources
+## Availability Zones
+  * Describe AZs
+    * Default region: us-east-1
 ## Networking
   * Describe current and create VPCs
   * Describe current and create subnets
