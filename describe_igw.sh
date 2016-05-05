@@ -29,9 +29,9 @@ fi
 # get VpcId from field 7
 vpc=$(aws ec2 describe-vpcs --output text --filters Name=cidr,Values=$cidr | cut -f 7)
 #
-# Describe IGWs
+# Describe IGWs for the specific VPC
 # Describe IGW results fields
-# 1- "INTERNETGATEWAYS"
+# 1- Constant text: "INTERNETGATEWAYS"
 # 2- InternetGatewayId
 # 3- Attachments: State
 # 4- Attachments: VpcId
@@ -41,4 +41,3 @@ aws ec2 describe-internet-gateways --output text \
     > describe_igw.txt
 igw=$(egrep --only-matching igw-[a-z0-9]{8} describe_igw.txt)
 echo "IGW for" $cidr "vpc" $vpc "is" $igw
-
