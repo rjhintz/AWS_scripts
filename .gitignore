@@ -1,0 +1,8 @@
+# ignore objects and archives, anywhere in the tree.
+*.[oa]
+# ignore testing filetypes
+*.json
+*.txt
+test*.*
+# ignore tags (for now)
+tags
