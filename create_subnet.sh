@@ -82,10 +82,13 @@ done;
 # Array - braces expand to 1, 2, 3
 cidr_subnets=(172.16.{1..3}.0/24)
 #
+# adjust values when an AZ can't create subnets
 az_spread=4
+index_az=2
+#
+# number of subnets per AZ
 subnet_spread=3
 #
-index_az=2
 index_subnets=0
 #
 echo "Creating subnets in VPC " $vpc
@@ -115,12 +118,9 @@ do
         aws ec2 wait subnet-available
         ((index_subnets++))
     done;
+# 2nd pass for 2nd AZ
 index_subnets=0 # reset inner loop index
 cidr_subnets=(172.16.{11..13}.0/24)
 ((index_az++))
 done;
 # END
-# function_name ()
-# { 
-#     command... 
-# }
