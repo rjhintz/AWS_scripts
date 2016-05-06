@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 #
-# AWS - Create Route Table, Create Route, Associate with Subnet
+# AWS - Create Route Table, then Create Route, and then Associate Route Table
+#  with Subnet
 #
-# name ()
-# {
-#     commands
-#     return
-# }
-# Describe Current Route Tables
 export AWS_DEFAULT_REGION=us-east-1
 echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
 #
-# Describe RTs
+# Describe Current Route Tables
 # Describe RT results fields
 #"RouteTables":
 #    "Associations":
@@ -31,7 +26,7 @@ echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
 #        "GatewayId": "igw-0fa1166b"
 aws ec2 describe-route-tables --output json > describe_route_tables.json
 #
-# Describe VPC
+# Get VPC value
 #
 # Is there a VPC with CIDR 172.16.0.0/16?
 default_cidr="172.16.0.0/16"
@@ -63,11 +58,11 @@ else
         > describe_vpcs.json
 fi
 #
-# Describe Subnets, then get those for public
+# Describe Subnets in VPC, then get those for public
 aws ec2 describe-subnets --output text  --filters Name=vpc-id,Values=$vpc \
     > describe_subnets.txt
 #
-# Describe IGW
+# Get IGW value for VPC
 aws ec2 describe-internet-gateways --output text \
     --filters Name=attachment.vpc-id,Values=$vpc \
     > describe_igw.txt
@@ -79,11 +74,12 @@ rtb_id=$(egrep --only-matching rtb-[a-z0-9]{8} create_route_table.json)
 echo " "
 echo "rtb created" $rtb_id "for VPC" $vpc
 #
-# Create Route
+# Create Route for newly created Route Table
 cidr_all=0.0.0.0/0
 aws ec2 create-route --route-table-id $rtb_id \
     --destination-cidr-block $cidr_all  \
     --gateway-id $igw
+echo " "
 echo "Route created for" $cidr_all "to IGW" $igw
 #
 # Associate RTB(s) with Subnet(s)
@@ -92,13 +88,24 @@ aws ec2 describe-subnets --output text \
     > describe_subnets.txt
 subnet_public_1=$(egrep 172.16.1.0 describe_subnets.txt  \
     | egrep --only-matching subnet-[a-z0-9]{8})
+echo " "
 echo "subnet_public_1" $subnet_public_1
-echo ""
 #
 subnet_public_2=$(egrep 172.16.11.0 describe_subnets.txt  \
     | egrep --only-matching subnet-[a-z0-9]{8})
+echo ""
 echo "subnet_public_2" $subnet_public_2
+#
+# Associate route table for first public subnet
 aws ec2 associate-route-table \
-    --subnet-id subnet_public_1  \
+    --subnet-id $subnet_public_1  \
     --route-table-id $rtb_id
-#echo "Route table" $rtb-id "subnet" $subnet-id
+#
+# Associate route table for second public subnet
+aws ec2 associate-route-table \
+    --subnet-id $subnet_public_2  \
+    --route-table-id $rtb_id
+# echo ""
+# echo "Route table" $rtb-id "subnet" $usubnet_public_1
+# echo ""
+# echo "Route table" $rtb-id "subnet" $subnet_public_2
