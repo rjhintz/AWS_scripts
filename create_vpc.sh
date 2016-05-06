@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 #
 # AWS - Create a VPC
+#  default: 172.16.0.0/16
+#
 # Setup
 #
 export AWS_DEFAULT_REGION=us-east-1
 echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
 #
-# Is there a VPC with CIDR 172.16.0.0/16?
 default_cidr="172.16.0.0/16"
 read -p "CIDR? (default: $default_cidr)  " cidr
 
@@ -29,6 +30,7 @@ fi
 # get VpcId from field 7
 vpc=$(aws ec2 describe-vpcs --output text --filters Name=cidr,Values=$cidr | cut -f 7)
 #
+# Is there already a VPC with the default CIDR?
 # if $vpc = regex ^$, then no VPC with specified CIDR
 if [[ "$vpc" =~ ^$ ]]; then
       echo "No current VPC with CIDR $cidr"
@@ -46,9 +48,3 @@ aws ec2 wait vpc-available --filters Name=cidr,Values=$cidr
 # Describe VPC
 aws ec2 describe-vpcs --output table   --filters Name=cidr,Values=$cidr
 # END
-# name ()
-# {
-#     commands
-# 
-#     return
-# }
