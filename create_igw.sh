@@ -5,7 +5,7 @@
 export AWS_DEFAULT_REGION=us-east-1
 echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
 #
-# Is there a VPC with CIDR 172.16.0.0/16?
+# Is there a VPC with the default CIDR?
 default_cidr="172.16.0.0/16"
 read -p "CIDR? (default: $default_cidr)  " cidr
 #
@@ -14,7 +14,7 @@ if [[ "$cidr" =~ ^$ ]]; then
     cidr=$default_cidr
     echo "using default CIDR $default_cidr";
 fi
-#
+# Get VPC value
 # Describe VPCs
 # Describe VPC results fields
 # 1- "VPCS"
@@ -45,8 +45,9 @@ fi
 #
 echo " "
 aws ec2 create-internet-gateway > create_igw.json
-igw=$(cat create_igw.json | egrep--only-matching igw-[a-z0-9]{8} create_igw.json)
+igw=$(cat create_igw.json | egrep --only-matching igw-[a-z0-9]{8} create_igw.json)
 echo "New IGW " $igw
+# Attach newly created IGW to VPC
 aws ec2 attach-internet-gateway \
     --internet-gateway-id $igw  \
     --vpc-id $vpc
