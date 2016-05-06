@@ -2,6 +2,15 @@
 Some scripts to manage AWS resources.
 * Default region: us-east-1
 
+## Process
+  1. Create VPC
+  2. Create Subnets
+  3. Create Internet Gateway
+  4. Create Route Tables
+    *  Create route Table
+    *  Create route to 0.0.0.0/0
+    *  Associate Route Table with Subnet designated to be public facing
+
 ## Availability Zones
   * Describe AZs
 
