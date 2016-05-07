@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+#
 # Create subject for an already created VPC
 #
 export AWS_DEFAULT_REGION=us-east-1
