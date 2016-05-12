@@ -19,7 +19,8 @@ instance_type="t2.nano"
 monitoring="Enabled=true"
 subnet_id="subnet-7e5bc208"
 instance_shutdown_behavior="stop"
-count=1  # number of instances to start
+token=$(date +"%Y%m%d%H%M%S%N")
+count=2  # number of instances to start
 #
 aws ec2 run-instances \
     --no-dry-run  \
@@ -31,8 +32,7 @@ aws ec2 run-instances \
     --subnet-id $subnet_id \
     --enable-api-termination \
     --instance-initiated-shutdown-behavior $instance_shutdown_behavior   \
-    --client-token xxx  \
-    --additional-info xxx  \
+    --client-token $token  \
     --no-ebs-optimized  \
     --count $count  \
     --no-associate-public-ip-address \
@@ -73,7 +73,9 @@ do
     # arithmetic evaluation syntax: ((x))
     ((index++))
 done;
-#
+# End logic
+# ---------------------------------------------------------------
+#  Command & Parameters
 #   run-instances
 #   [--dry-run | --no-dry-run]
 #   --image-id <value>
