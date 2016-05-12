@@ -3,7 +3,7 @@
 # Describe AWS Instances
 #
 export AWS_DEFAULT_REGION=us-east-1
-echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
+echo "AWS default region= " $AWS_DEFAULT_REGION
 #
 # Put the instances into an array
 instances=($(aws ec2 describe-instances --output text)) # \
@@ -14,14 +14,21 @@ instances=($(aws ec2 describe-instances --output text)) # \
 #
 # echo "instances "
 # How many are there?
-instance_count=${#instance[*]}
-echo "Instance count" $instance_count
+instance_count=${#instances[*]}
+# because the compound command (( )) is part of the shell syntax
+# rather than an ordinary command, and it deals only with integers,
+# it is able to recognize variables by name and does not require expansion to be performed
+if (( instance_count == 0)); then
+    echo "No running instances"
+    exit
+fi
+# echo "Instance count" $instance_count
 #
 # List instances
 index=0
 while [ $index -lt $instance_count ]
 do
-    echo ${instance[$index]}
+    echo ${instances[$index]}
     # arithmetic evaluation syntax: ((x))
     ((index++))
 done;
