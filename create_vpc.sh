@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
 # AWS - Create a VPC
-#  default: 172.16.0.0/16
+#  default: 172.16.0.0/20
 #
 # Setup
 #
 export AWS_DEFAULT_REGION=us-east-1
 echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
 #
-default_cidr="172.16.0.0/16"
+default_cidr="172.16.0.0/20"
 read -p "CIDR? (default: $default_cidr)  " cidr
 
 # if $cidr value that's input has regex pattern ^$, it's empty, so use default
@@ -35,7 +35,7 @@ vpc=$(aws ec2 describe-vpcs --output text --filters Name=cidr,Values=$cidr | cut
 if [[ "$vpc" =~ ^$ ]]; then
       echo "No current VPC with CIDR $cidr"
       # No current VPC with desired CIDR so create one
-      # --create as /16 (64K addresses) to /28 (16 addresses)
+      # --create as /20 (4094 addresses) to /28 (16 addresses)
       # aws ec2 create-vpc  --dry-run | --no-dry-run \
       #                     --instance-tenacy <value>  \
       #                     --cidr-block <value>
