@@ -5,8 +5,8 @@
 export AWS_DEFAULT_REGION=us-east-1
 echo "AWS_DEFAULT_REGION= " $AWS_DEFAULT_REGION
 #
-# Is there a VPC with CIDR 172.16.0.0/16?
-default_cidr="172.16.0.0/16"
+# Is there a VPC with CIDR 172.16.0.0/20?
+default_cidr="172.16.0.0/20"
 read -p "CIDR? (default: $default_cidr)  " cidr
 
 # if $cidr value that's input has regex pattern ^$, it's empty, so use default
