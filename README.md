@@ -1,8 +1,21 @@
 # AWS Scripts
-Some scripts to manage AWS resources.
+CLI scripts to manage AWS resources.
 * Default region: us-east-1
 
-## Process
+## High Level Documentation
+[AWS Command Line Interface](http://aws.amazon.com/cli/)
+
+[CLI Reference](http://docs.aws.amazon.com/cli/latest/reference/)
+
+[Github Repo](https://github.com/aws/aws-cli)
+
+[AWS CLI Forum](https://forums.aws.amazon.com/forum.jspa?forumID=150)
+
+## Availability Zones
+  * Describe AZs
+
+## Networking
+### Overall Network Process
   1. Create VPC
   2. Create Subnets
   3. Create Internet Gateway
@@ -11,16 +24,12 @@ Some scripts to manage AWS resources.
     *  Create route to 0.0.0.0/0
     *  Associate Route Table with Subnet designated to be public facing
 
-## Availability Zones
-  * Describe AZs
-
-## Networking
 ### Describe
   * Describe current VPCs
   * Describe current subnets
   * Describe Internet gateways
   * Describe Route tables
- 
+
 ### Create
 * Create VPC(s)
   * Create subnets
@@ -36,3 +45,12 @@ Some scripts to manage AWS resources.
     * Create route table
     * Create route(s) for new route table
     * Associate new route(s) with previously created subnet(s)
+
+## Manage Amazon EC2 Instances Remotely
+### Simple Systems Manager (SSM)
+[Manage instances remotely using "Run Command"]]
+(http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/execute-remote-commands.html)
+
+## References
+[Cheat sheet - contributed]
+(http://www.colliernotes.com/2016/05/amazon-web-services-command-line.html)
