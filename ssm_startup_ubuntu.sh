@@ -42,6 +42,9 @@ echo "============> End Install Packages"
 #
 # Set up operating environment
 #
+echo "============> mkdir $HOME/.bin"
+mkdir $HOME/.bin
+#
 echo "============> Clone & symlink dotfiles"
 git clone https://github.com/rjhintz/dotfiles.git
 # sudo ln -s ~/dotfiles/profile ~/.profile
