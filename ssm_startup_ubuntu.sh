@@ -21,7 +21,7 @@ cd /tmp
 echo "============> curl"
 curl https://amazon-ssm-us-east-1.s3.amazonaws.com/latest/debian_amd64/amazon-ssm-agent.deb -o amazon-ssm-agent.deb
 echo "============> dpkg -i amazon-ssm-agent.deb"
-dpkg -i amazon-ssm-agent.deb
+sudo dpkg -i amazon-ssm-agent.deb
 echo "============> End SSM Agent Install"
 # ========================================
 # Metadata
